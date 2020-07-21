@@ -1,0 +1,112 @@
+Apache web server manual installation and configuration
+--------------------------------------------------------
+
+in order install apache web server we have to follow this steps. The steps are stated below.
+
+1. download the latest version of apache web server
+	wget http://httpd.apache.org/download.cgi#apache24
+
+   or download it manually by using any browser from apache servers official website
+
+2. If the file is downloaded. Then extract is by using tar command
+	tar xvzf httpd-2.4.43
+   than go inside the extracted directory
+
+3. now you shold have to set the prefeix first. prefix is the directory where we have to install the apache server. It could be any directory.
+	prefix: mkdir /opt/apache-http-server
+
+4. run the configure file 
+	./configure --prefix=/opt/apache-http-server
+
+-------------------------------------------------------------------------
+-------------------- possible error and solution ------------------------
+-------------------------------------------------------------------------
+
+a. apr and apr-util missing (apache portable runtime)
+   solution:
+	
+	- download apr and apr utils form their respective websites. http://apr.apache.org/download.cgi
+	- extract them and rename them as apr and apr-util
+		tar xvzf apr-1.7.0.tar.gz 
+		tar xvzf apr-util-1.6.1.tar.gz
+
+		mv apr-1.7.0.tar.gz apr
+		mv apr-util-1.6.1.tar.gz apr-util
+
+	- now move them to /root/Downloads/httpd-2.4.43/srclib
+		mv apr apr-util /root/Downloads/httpd-2.4.43/srclib
+
+b. gcc compiler missing 
+   solution:
+		yum install gcc -y
+
+c. pcre-config for libpcre not found
+    solution:
+
+		yum install pcre-devel
+
+d. OpenSSL version is too old
+
+		yum install openssl-devel
+
+e. xml/apr_xml.c:35:19: fatal error: expat.h: No such file or directory
+
+		yum install expat-devel
+
+f. configure: error: no acceptable C compiler found in $PATH
+
+		yum install gcc -y
+
+g. nghttp2 version is too old
+
+	wget https://github.com/nghttp2/nghttp2/releases/download/v1.37.0/nghttp2-1.37.0.tar.gz
+	tar -xvf nghttp2-1.37.0.tar.gz
+
+	It will create a new folder, go inside that and run the following
+	./configure
+	make
+	make install
+
+h. libtool:   error: error: cannot install 'libaprutil-1.la' to a directory not ending in /usr/local/apache2/lib
+
+	make clear 
+	./configure
+	make
+	make install
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+5. Compilation
+	make
+
+6. installation
+	make install 
+
+
+
+
+tetsing :
+
+some error still have to be solved
+
+	vim /conf/httpd.conf
+	add
+		ServerName localhost
+		Listen 8888 (port)
+
+- search the port 
+	senamage port -l | grep 8888
+
+- create port 
+	semanage port -a -t http_port_t -p tcp 8888
+
+- add port to firewall 
+	firewall-cmd --permanen --add-port 8888/tcp
+
+	firewall-cmd --reload
+
+
+now form the browser try this urls
+
+vm browser: 127.0.0.1:8888
+main machine browser: 192.168.10.6:8888
